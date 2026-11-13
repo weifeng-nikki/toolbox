@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fdfaf6" />
+    <title>本地工具箱</title>
+    <script>
+      // 首屏前定主题与天空，避免亮暗闪烁
+      ;(function () {
+        var mode = null
+        try {
+          mode = localStorage.getItem('toolbox.theme')
+        } catch (e) {}
+        if (mode !== 'light' && mode !== 'dark') mode = 'auto'
+
+        var h = new Date().getHours()
+        var sky =
+          mode === 'light'
+            ? 'day'
+            : mode === 'dark'
+              ? 'night'
+              : h >= 5 && h < 8
+                ? 'dawn'
+                : h >= 8 && h < 17
+                  ? 'day'
+                  : h >= 17 && h < 20
+                    ? 'dusk'
+                    : 'night'
+
+        var metaColor = { dawn: '#f3e2e6', day: '#eef3f7', dusk: '#ebcdbc', night: '#1d1729' }
+        var theme = sky === 'night' ? 'dark' : 'light'
+
+        document.documentElement.dataset.theme = theme
+        document.documentElement.dataset.sky = sky
+        document.documentElement.style.colorScheme = theme
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute('content', metaColor[sky])
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
